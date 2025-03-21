@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+
+        <div id="messages" class="messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        {% if pending_requests %}
+            <h2>Pending Credit Requests</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Current Credits</th>
+                        <th>Request Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in pending_requests %}
+                        <tr>
+                            <td>{{ request.username }}</td>
+                            <td>{{ request.credits }}</td>
+                            <td>{{ request.request_date }}</td>
+                            <td>
+                                <form method="post" style="display: inline;">
+                                    <input type="hidden" name="username" value="{{ request.username }}">
+                                    <button type="submit" name="action" value="approve" class="approve-btn">Approve</button>
+                                    <button type="submit" name="action" value="decline" class="decline-btn">Decline</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No pending credit requests.</p>
+        {% endif %}
+
+        <br>
+        <a href="{{ url_for('logout') }}" class="button">Logout</a>
+    </div>
+</body>
+</html>

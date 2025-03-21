@@ -1,0 +1,130 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 50px;
+    background-color: #f4f4f4;
+}
+
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    width: 50%;
+}
+
+h1 {
+    color: #333;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background: #3f4c5c;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.button:hover {
+    background: #2c3a4a;
+}
+
+.upload-form {
+    margin-top: 20px;
+}
+
+.file-input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: white;
+}
+
+.upload-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.upload-btn:hover {
+    background: #218838;
+}
+
+.upload-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Flash Messages */
+.messages {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.success {
+    color: green;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.error {
+    color: red;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.messages p {
+    margin: 5px 0;
+}
+
+.credits {
+    margin-top: 15px;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Similarity Results Table */
+.similarity-result {
+    margin-top: 20px;
+    text-align: left;
+    display: inline-block;
+    width: 100%;
+}
+
+.similarity-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.similarity-table th, .similarity-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.similarity-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+.success { color: green; font-weight: bold; }
+.error { color: red; font-weight: bold; }
+
+.request-btn { padding: 8px 16px; background: #2ecc71; color: white; border: none; cursor: pointer; }
+.request-btn:disabled { background: #bdc3c7; cursor: not-allowed; }
+.approve-btn { padding: 6px 12px; background: #2ecc71; color: white; border: none; cursor: pointer; margin-right: 5px; }
+.decline-btn { padding: 6px 12px; background: #e74c3c; color: white; border: none; cursor: pointer; }

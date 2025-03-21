@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ username }}!</h1>
+
+        <!-- Flash Messages -->
+        <div id="messages" class="messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Display Credits -->
+        <div class="credits">
+            <p>You have <strong>{{ credits|default(20) }}</strong> credits.</p>
+            <form method="post" style="margin-top: 10px;">
+                <button type="submit" name="request_credits" class="request-btn">
+                    Request Credits
+                </button>
+            </form>
+        </div>
+
+        <!-- File Upload Form -->
+        <form class="upload-form" action="{{ url_for('user.user') }}" method="post" enctype="multipart/form-data" id="uploadForm">
+            <input type="file" name="file" id="fileInput" class="file-input" accept=".txt" required>
+            <button type="submit" class="upload-btn" id="uploadBtn" {% if (credits|default(20)) <= 0 %}disabled{% endif %}>Upload</button>
+        </form>
+
+        <!-- Loading Indicator -->
+        <div id="loading" style="display: none;">
+            <p>Uploading... Please wait. <span class="spinner"></span></p>
+        </div>
+
+        <!-- Similarity Results -->
+        {% if user_comparisons or all_users_comparisons %}
+            <div class="results">
+                {% if user_comparisons %}
+                    <h2>Your Files</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Uploaded File</th>
+                                <th>Compared File</th>
+                                <th>Similarity (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in user_comparisons %}
+                                <tr>
+                                    <td>{{ result.uploaded_file }}</td>
+                                    <td>{{ result.compared_file }}</td>
+                                    <td>{{ result.similarity }}%</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
+                {% if all_users_comparisons %}
+                    <h2>Scanned with Other Files</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Uploaded File</th>
+                                <th>Compared File</th>
+                                <th>Similarity (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in all_users_comparisons %}
+                                <tr>
+                                    <td>{{ result.uploaded_file }}</td>
+                                    <td>{{ result.compared_file }}</td>
+                                    <td>{{ result.similarity }}%</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+        {% else %}
+            <p>No comparisons found. Upload a file to check similarity.</p>
+        {% endif %}
+
+        <br>
+        <a href="{{ url_for('logout') }}" class="button">Logout</a>
+    </div>
+
+    <script src="{{ url_for('static', filename='user.js') }}"></script>
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function() {
+            document.getElementById('loading').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

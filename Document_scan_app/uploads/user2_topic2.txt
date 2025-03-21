@@ -1,0 +1,26 @@
+I wasn’t even given a single interview until now—this is my first interview.
+
+However, I know what happened to some of my friends, which made me fear coding interviews.
+
+One of my friends comes from a cloud background and knows the basics of coding. In his interview, the interviewer asked him to:
+
+    Reverse a string
+    Sort an array
+    Use recursion to calculate n!
+
+He answered all the questions correctly and got selected.
+
+Another friend comes from an ML background. In his interview, the interviewer asked about:
+
+    Linked lists
+    Reversing a linked list
+    Some SQL-related questions
+
+Unfortunately, he got rejected.
+
+Seeing all this, I developed a fear of coding interviews and started learning properly. Now, I am good at coding.
+
+There are many similar experiences among my friends.
+
+The first factor in an interview is luck.
+The second factor is having strong coding skills—basic coding knowledge is not enough for interviews. Without good coding skills, there is a high chance of getting rejected.
