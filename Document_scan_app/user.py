@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, session, redirect, url_for, flash, request
 from werkzeug.utils import secure_filename
-from Database.data import DB_NAME, UPLOAD_FOLDER, allowed_file, save_file_to_db, compare_with_existing_files, request_credits, get_user_credits, get_pending_credit_requests
+from Database.data import  UPLOAD_FOLDER, allowed_file, save_file_to_db, compare_with_existing_files, request_credits, get_user_credits, get_pending_credit_requests
 import os
 
 user_bp = Blueprint("user", __name__)
