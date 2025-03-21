@@ -3,59 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>ScanBuddy - Admin Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Admin Dashboard</h1>
-
-        <div id="messages" class="messages">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <ul>
-                        {% for category, message in messages %}
-                            <li class="{{ category }}">{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
+    <header>
+        <div class="logo">ScanBuddy</div>
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('user.user') }}">Scan</a>
+            <a href="{{ url_for('user.results') }}">Results</a>
+            {% if 'username' in session %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% endif %}
+        </nav>
+        <div class="credit-indicator">
+            {% if 'username' in session %}
+                {{ session.get('credits', 0) }}/20 scans used
+            {% else %}
+                0/20 scans used
+            {% endif %}
         </div>
+    </header>
 
-        {% if pending_requests %}
-            <h2>Pending Credit Requests</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Current Credits</th>
-                        <th>Request Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for request in pending_requests %}
-                        <tr>
-                            <td>{{ request.username }}</td>
-                            <td>{{ request.credits }}</td>
-                            <td>{{ request.request_date }}</td>
-                            <td>
-                                <form method="post" style="display: inline;">
-                                    <input type="hidden" name="username" value="{{ request.username }}">
-                                    <button type="submit" name="action" value="approve" class="approve-btn">Approve</button>
-                                    <button type="submit" name="action" value="decline" class="decline-btn">Decline</button>
-                                </form>
-                            </td>
-                        </tr>
+    <div id="messages" class="messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
                     {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>No pending credit requests.</p>
-        {% endif %}
-
-        <br>
-        <a href="{{ url_for('logout') }}" class="button">Logout</a>
+                </ul>
+            {% endif %}
+        {% endwith %}
     </div>
+
+    <section class="admin-dashboard">
+        <div class="admin-card">
+            <h2>Admin Dashboard - Credit Requests</h2>
+            {% if requests %}
+                <table class="requests-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in requests %}
+                            <tr>
+                                <td>{{ request.username }}</td>
+                                <td>{{ request.email }}</td>
+                                <td>
+                                    <form method="post" style="display: inline;">
+                                        <input type="hidden" name="username" value="{{ request.username }}">
+                                        <button type="submit" name="action" value="approve" class="btn btn-primary">Approve</button>
+                                    </form>
+                                    <form method="post" style="display: inline;">
+                                        <input type="hidden" name="username" value="{{ request.username }}">
+                                        <button type="submit" name="action" value="decline" class="btn btn-secondary">Reject</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p class="request-count">Showing {{ requests|length }} credit request{{ 's' if requests|length != 1 else '' }}</p>
+            {% else %}
+                <div class="no-requests">
+                    <h3>No Credit Requests</h3>
+                    <p>There are currently no pending credit requests to review.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo">ScanBuddy</div>
+        <p>© 2025 ScanBuddy. All rights reserved.</p>
+    </footer>
 </body>
 </html>

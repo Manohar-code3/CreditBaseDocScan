@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScanBuddy - Document Scanning</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">ScanBuddy</div>
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('user.user') }}">Scan</a>
+            <a href="{{ url_for('user.results') }}">Results</a>
+            {% if 'username' in session %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% endif %}
+        </nav>
+        <div class="credit-indicator">
+            {% if 'username' in session %}
+                {{ session.get('credits', 0) }}/20 scans used
+            {% else %}
+                0/20 scans used
+            {% endif %}
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Document Scanning Made Simple</h1>
+        <p>Scan, match, and analyze your documents with our intelligent scanning system.</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('user.user') }}" class="btn btn-primary">Start Scanning</a>
+            <a href="{{ url_for('user.results') }}" class="btn btn-secondary">View Results</a>
+        </div>
+        <p class="free-scans">20 free document scans daily</p>
+    </section>
+
+    <section class="features">
+        <div class="feature-card">
+            <div class="icon">📷</div>
+            <h3>Quick Scanning</h3>
+            <p>Upload or take a photo of any document and our system processes it instantly.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">📑</div>
+            <h3>Accurate Matching</h3>
+            <p>Advanced algorithms match your documents with high precision and confidence.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">💳</div>
+            <h3>Credit System</h3>
+            <p>20 free scans daily with the option to request more when needed.</p>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="cta-text">
+            <h2>Ready to start scanning?</h2>
+            <p>Our document scanning system makes it easy to digitize, analyze and match your documents in seconds.</p>
+            <a href="{{ url_for('user.user') }}" class="btn btn-primary">Get Started</a>
+        </div>
+        <div class="cta-card">
+            <h3>Daily Free Scans</h3>
+            <p class="scan-count">20</p>
+            <p>available daily</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo">ScanBuddy</div>
+        <p>© 2025 ScanBuddy. All rights reserved.</p>
+    </footer>
+</body>
+</html>

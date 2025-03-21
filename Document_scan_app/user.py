@@ -1,18 +1,9 @@
 from flask import Blueprint, render_template, session, redirect, url_for, flash, request
-from werkzeug.utils import secure_filename
-from Database.data import  UPLOAD_FOLDER, allowed_file, save_file_to_db, compare_with_existing_files, request_credits, get_user_credits, get_pending_credit_requests
+from Database.data import get_user_credits, get_user_upload_count, save_file_to_db, compare_with_existing_files, request_credits, get_user_files, get_all_files, has_pending_request, read_document, calculate_similarity
 import os
+from datetime import datetime, timedelta
 
 user_bp = Blueprint("user", __name__)
-
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
-def has_pending_request(username):
-    requests = get_pending_credit_requests()
-    has_pending = any(req["username"] == username for req in requests)
-    print(f"Checking pending request for {username}: {has_pending}, Requests: {requests}")
-    return has_pending
 
 @user_bp.route("/user", methods=["GET", "POST"])
 def user():
@@ -22,69 +13,117 @@ def user():
 
     username = session["username"]
     credits = get_user_credits(username)
-    pending_request = has_pending_request(username)
-    print(f"User: {username}, Credits: {credits}, Pending: {pending_request}")
+    upload_count = get_user_upload_count(username)
+    user_files = get_user_files(username)
+
+    # Calculate time until midnight
+    now = datetime.now()
+    midnight = datetime(now.year, now.month, now.day) + timedelta(days=1)
+    time_to_midnight = midnight - now
+    hours, remainder = divmod(time_to_midnight.seconds, 3600)
+    minutes = remainder // 60
+    reset_time = f"{hours}h {minutes}m"
 
     if request.method == "POST":
-        if "request_credits" in request.form:
-            if credits > 15:
-                flash("Request can't send. You have more than 15 credits.", "error")
-            elif pending_request:
+        if "file" in request.files:
+            file = request.files["file"]
+            if file and file.filename:
+                if credits <= 0:
+                    flash("You have no credits left. Please request more credits.", "error")
+                    return redirect(url_for("user.user"))
+                
+                from Database.data import allowed_file
+                if not allowed_file(file.filename):
+                    flash("Invalid file type. Only .txt files are allowed.", "error")
+                    return redirect(url_for("user.user"))
+
+                upload_folder = "uploads"
+                if not os.path.exists(upload_folder):
+                    os.makedirs(upload_folder)
+                
+                file_path = os.path.join(upload_folder, file.filename)
+                file.save(file_path)
+                
+                similarity = save_file_to_db(username, file.filename, file_path)
+                if similarity is False:
+                    flash("You have no credits left. Please request more credits.", "error")
+                    return redirect(url_for("user.user"))
+                
+                flash(f"File uploaded successfully! Max similarity: {similarity:.2f}%", "success")
+                return redirect(url_for("user.results"))
+        
+        elif "action" in request.form and request.form["action"] == "request_credits":
+            # Check if the user already has a pending request
+            if has_pending_request(username):
                 flash("Request already sent.", "error")
+                return redirect(url_for("user.user"))
+
+            # Check if credits are less than 15
+            if credits >= 15:
+                flash("Cannot send request: Credits are 15 or more.", "error")
+                return redirect(url_for("user.user"))
+
+            # If credits < 15 and no pending request, proceed with the request
+            if request_credits(username):
+                flash("Request sent to admin.", "success")
             else:
-                if request_credits(username):
-                    flash("Request sent to admin.", "success")
-                    print(f"Request sent for {username}")
-                else:
-                    flash("Failed to send credit request. Try again.", "error")
-                    print(f"Request failed for {username}")
+                flash("Failed to send request.", "error")
             return redirect(url_for("user.user"))
 
-        if credits <= 0:
-            flash("No credits left! Wait for tomorrow or request credits from admin.", "error")
-            return redirect(url_for("user.user"))
+    return render_template("user.html", credits=credits, upload_count=upload_count, user_files=user_files, reset_time=reset_time)
 
-        file = request.files.get("file")
-        if not file or file.filename == "":
-            flash("No file selected!", "error")
-            return redirect(url_for("user.user"))
+@user_bp.route("/results")
+def results():
+    if "username" not in session:
+        flash("Please log in first.", "error")
+        return redirect(url_for("login"))
 
-        if not allowed_file(file.filename):
-            flash("Invalid file type! Please upload a supported file format.", "error")
-            return redirect(url_for("user.user"))
+    username = session["username"]
+    credits = get_user_credits(username)
+    upload_count = get_user_upload_count(username)
+    user_files = get_user_files(username)
 
-        filename = f"{username}_{secure_filename(file.filename)}"
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        try:
-            file.save(filepath)
-        except Exception as e:
-            flash(f"Failed to save file: {str(e)}", "error")
-            return redirect(url_for("user.user"))
+    # Calculate time until midnight
+    now = datetime.now()
+    midnight = datetime(now.year, now.month, now.day) + timedelta(days=1)
+    time_to_midnight = midnight - now
+    hours, remainder = divmod(time_to_midnight.seconds, 3600)
+    minutes = remainder // 60
+    reset_time = f"{hours}h {minutes}m"
 
-        similarity = save_file_to_db(username, filename, filepath)
-        if similarity is False:
-            flash("Upload failed due to insufficient credits.", "error")
-            return redirect(url_for("user.user"))
+    # Prepare user_results for display (user's own files)
+    user_results = []
+    for idx, (file_name, file_path, upload_date, similarity) in enumerate(user_files, 1):
+        user_results.append({
+            "file_name": file_name,
+            "upload_date": upload_date,
+            "type": "Text",
+            "id": f"doc-{idx}",
+            "extract": read_document(file_path)[:50] + "..." if read_document(file_path) else "No content",
+            "similarity": round(similarity, 2)
+        })
 
-        credits = get_user_credits(username)  # Refresh credits
-        flash("File uploaded successfully!", "success")
-        session.pop("user_comparisons", None)
-        session.pop("all_users_comparisons", None)
+    # Get the most recent file for comparison with other users' files
+    most_recent_file = user_files[0] if user_files else None
+    other_users_results = []
+    if most_recent_file:
+        most_recent_file_path = most_recent_file[1]  # file_path
+        all_files = get_all_files()
+        idx = len(user_files) + 1
+        for file_user, file_name, file_path, upload_date, _ in all_files:
+            if file_user != username:  # Exclude the current user's files
+                # Calculate similarity with the most recent file
+                most_recent_text = read_document(most_recent_file_path)
+                other_text = read_document(file_path)
+                similarity = calculate_similarity(most_recent_text, [other_text])
+                other_users_results.append({
+                    "file_name": file_name,
+                    "upload_date": upload_date,
+                    "type": "Text",
+                    "id": f"doc-{idx}",
+                    "extract": other_text[:50] + "..." if other_text else "No content",
+                    "similarity": round(similarity, 2)
+                })
+                idx += 1
 
-        user_comparisons, all_users_comparisons = compare_with_existing_files(username, filepath)
-        user_comparisons = [{"uploaded_file": u[1], "compared_file": u[0], "similarity": u[2]} for u in user_comparisons]
-        all_users_comparisons = [{"uploaded_file": a[1], "compared_file": a[0], "similarity": a[2]} for a in all_users_comparisons]
-
-        session["user_comparisons"] = user_comparisons
-        session["all_users_comparisons"] = all_users_comparisons
-
-        return redirect(url_for("user.user"))
-
-    return render_template(
-        "user.html",
-        username=username,
-        credits=credits,
-        user_comparisons=session.get("user_comparisons", []),
-        all_users_comparisons=session.get("all_users_comparisons", []),
-        pending_request=pending_request
-    )
+    return render_template("results.html", credits=credits, upload_count=upload_count, user_results=user_results, other_users_results=other_users_results, reset_time=reset_time)

@@ -1,130 +1,463 @@
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 50px;
-    background-color: #f4f4f4;
-}
-
-.container {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    display: inline-block;
-    width: 50%;
-}
-
-h1 {
+    margin: 0;
+    padding: 0;
+    background-color: #f5f8ff;
     color: #333;
 }
 
-.button {
-    display: inline-block;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 10px 20px;
-    margin-top: 20px;
-    background: #3f4c5c;
-    color: white;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1a73e8;
+}
+
+nav a {
+    margin: 0 15px;
     text-decoration: none;
-    border-radius: 5px;
+    color: #1a73e8;
+    font-weight: 500;
 }
 
-.button:hover {
-    background: #2c3a4a;
+.credit-indicator {
+    background-color: #e8f0fe;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+    color: #1a73e8;
 }
 
-.upload-form {
+.hero {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    color: #1a73e8;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #666;
+    margin: 10px 0 20px;
+}
+
+.hero-buttons .btn {
+    margin: 0 10px;
+}
+
+.free-scans {
     margin-top: 20px;
-}
-
-.file-input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background: white;
-}
-
-.upload-btn {
-    display: inline-block;
-    padding: 10px 20px;
-    margin-top: 10px;
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.upload-btn:hover {
-    background: #218838;
-}
-
-.upload-btn:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-}
-
-/* Flash Messages */
-.messages {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 5px;
     font-size: 16px;
+    color: #666;
 }
 
-.success {
-    color: green;
-    background: #d4edda;
-    border: 1px solid #c3e6cb;
-    padding: 10px;
+.features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 50px 20px;
+}
+
+.feature-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 250px;
+}
+
+.feature-card .icon {
+    font-size: 40px;
     margin-bottom: 10px;
 }
 
-.error {
-    color: red;
-    background: #f8d7da;
-    border: 1px solid #f5c6cb;
-    padding: 10px;
+.feature-card h3 {
+    font-size: 20px;
+    margin: 10px 0;
+}
+
+.feature-card p {
+    font-size: 14px;
+    color: #666;
+}
+
+.cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+    gap: 50px;
+}
+
+.cta-text {
+    text-align: left;
+}
+
+.cta-text h2 {
+    font-size: 32px;
+    color: #333;
+}
+
+.cta-text p {
+    font-size: 16px;
+    color: #666;
+    margin: 10px 0 20px;
+}
+
+.cta-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.cta-card h3 {
+    font-size: 20px;
     margin-bottom: 10px;
 }
 
-.messages p {
+.cta-card .scan-count {
+    font-size: 40px;
+    color: #1a73e8;
+    margin: 10px 0;
+}
+
+.cta-card p {
+    font-size: 14px;
+    color: #666;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* User Dashboard and Results */
+.dashboard {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 50px 20px;
+}
+
+.scanner-card, .credit-balance, .results-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+.results-card {
+    width: 600px; /* Wider to accommodate table */
+}
+
+.scanner-card h2, .credit-balance h2, .results-card h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.scanner-card p, .credit-balance p, .results-card p {
+    font-size: 14px;
+    color: #666;
+}
+
+.upload-area {
+    border: 2px dashed #1a73e8;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.upload-area input[type="file"] {
+    display: none;
+}
+
+.upload-area label {
+    cursor: pointer;
+    color: #1a73e8;
+}
+
+.supported-formats {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.no-results h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.results-table th, .results-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #e8f0fe;
+    font-size: 14px;
+}
+
+.results-table th {
+    background-color: #f5f8ff;
+    color: #333;
+    font-weight: 500;
+}
+
+.results-table td {
+    color: #666;
+}
+
+.similarity {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.similarity.high {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.similarity.low {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+}
+
+.result-count {
+    font-size: 14px;
+    color: #1a73e8;
+}
+
+.credit-balance .credits {
+    font-size: 32px;
+    color: #1a73e8;
+    margin: 10px 0;
+}
+
+.credit-stats {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.credit-stats div {
+    text-align: center;
+}
+
+.credit-stats p {
     margin: 5px 0;
 }
 
-.credits {
-    margin-top: 15px;
-    font-size: 16px;
-    color: #333;
-}
-
-/* Similarity Results Table */
-.similarity-result {
-    margin-top: 20px;
-    text-align: left;
-    display: inline-block;
-    width: 100%;
-}
-
-.similarity-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-.similarity-table th, .similarity-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
+.auth-form {
+    max-width: 400px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
-.similarity-table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
+.auth-form h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
 }
-.success { color: green; font-weight: bold; }
-.error { color: red; font-weight: bold; }
 
-.request-btn { padding: 8px 16px; background: #2ecc71; color: white; border: none; cursor: pointer; }
-.request-btn:disabled { background: #bdc3c7; cursor: not-allowed; }
-.approve-btn { padding: 6px 12px; background: #2ecc71; color: white; border: none; cursor: pointer; margin-right: 5px; }
-.decline-btn { padding: 6px 12px; background: #e74c3c; color: white; border: none; cursor: pointer; }
+.auth-form p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.auth-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-form label {
+    text-align: left;
+    margin: 10px 0 5px;
+}
+
+.auth-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.auth-form button {
+    margin-top: 10px;
+}
+
+.auth-form a {
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: #1a73e8;
+    color: #fff;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: #fff;
+    color: #1a73e8;
+    border: 1px solid #1a73e8;
+}
+
+.messages {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.messages ul {
+    list-style: none;
+    padding: 0;
+}
+
+.messages li {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+.messages .success {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+}
+
+.messages .error {
+    background-color: #ffe6e6;
+    color: #d32f2f;
+}
+
+/* Admin Dashboard */
+.admin-dashboard {
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+}
+
+.admin-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 800px;
+}
+
+.admin-card h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.requests-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.requests-table th, .requests-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #e8f0fe;
+    font-size: 14px;
+}
+
+.requests-table th {
+    background-color: #f5f8ff;
+    color: #333;
+    font-weight: 500;
+}
+
+.requests-table td {
+    color: #666;
+}
+
+.requests-table form {
+    display: inline;
+    margin-right: 5px;
+}
+
+.request-count {
+    font-size: 14px;
+    color: #1a73e8;
+}
+
+.no-requests h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.no-requests p {
+    font-size: 14px;
+    color: #666;
+}
+.messages {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.messages ul {
+    list-style: none;
+    padding: 0;
+}
+
+.messages li {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+.messages .success {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+}
+
+.messages .error {
+    background-color: #ffe6e6;
+    color: #d32f2f;
+}

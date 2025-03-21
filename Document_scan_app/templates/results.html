@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScanBuddy - Scan Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">ScanBuddy</div>
+        <nav>
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('user.user') }}">Scan</a>
+            <a href="{{ url_for('user.results') }}">Results</a>
+            {% if 'username' in session %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% endif %}
+        </nav>
+        <div class="credit-indicator">
+            {{ upload_count }}/{{ credits }} scans used
+        </div>
+    </header>
+
+    <div id="messages" class="messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <section class="dashboard">
+        <div class="results-card">
+            <div class="results-header">
+                <h2>Scan Results</h2>
+                <a href="{{ url_for('user.user') }}" class="btn btn-secondary">New Scan</a>
+            </div>
+            {% if user_results %}
+                <h3>Your Files</h3>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Document Name</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>ID</th>
+                            <th>Extract</th>
+                            <th>Similarity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in user_results %}
+                            <tr>
+                                <td>{{ result.file_name }}</td>
+                                <td>{{ result.upload_date }}</td>
+                                <td>{{ result.type }}</td>
+                                <td>{{ result.id }}</td>
+                                <td>{{ result.extract }}</td>
+                                <td>
+                                    <span class="similarity {{ 'high' if result.similarity >= 80 else 'low' }}">
+                                        {{ result.similarity }}% Match
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p class="result-count">Showing {{ user_results|length }} scan result{{ 's' if user_results|length != 1 else '' }}</p>
+
+                {% if other_users_results %}
+                    <h3>Other Users' Files (Compared to Your Most Recent File)</h3>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Document Name</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>ID</th>
+                                <th>Extract</th>
+                                <th>Similarity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in other_users_results %}
+                                <tr>
+                                    <td>{{ result.file_name }}</td>
+                                    <td>{{ result.upload_date }}</td>
+                                    <td>{{ result.type }}</td>
+                                    <td>{{ result.id }}</td>
+                                    <td>{{ result.extract }}</td>
+                                    <td>
+                                        <span class="similarity {{ 'high' if result.similarity >= 80 else 'low' }}">
+                                            {{ result.similarity }}% Match
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <p class="result-count">Showing {{ other_users_results|length }} other users' file{{ 's' if other_users_results|length != 1 else '' }}</p>
+                {% endif %}
+            {% else %}
+                <div class="no-results">
+                    <h3>No Scan Results Yet</h3>
+                    <p>You haven't scanned any documents yet. Start by scanning your first document.</p>
+                    <a href="{{ url_for('user.user') }}" class="btn btn-primary">Scan Document</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="credit-balance">
+            <h2>Credit Balance</h2>
+            <p class="credits">{{ credits }} Credits</p>
+            <p>Your scan credit usage for today</p>
+            <div class="credit-stats">
+                <div>
+                    <p>Daily Scans</p>
+                    <p>{{ upload_count }}/{{ credits }}</p>
+                </div>
+                <div>
+                    <p>Free Daily Scans</p>
+                    <p>{{ credits }}</p>
+                </div>
+                <div>
+                    <p>Resets In</p>
+                    <p>{{ reset_time }}</p>
+                </div>
+            </div>
+            <p>Each scan consumes 1 credit. Credits reset at midnight.</p>
+        </div>
+    </section>
+</body>
+</html>

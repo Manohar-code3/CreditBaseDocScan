@@ -34,7 +34,7 @@ def admin():
         print(f"Error in get_pending_credit_requests: {e}")
         pending_requests = []
 
-    # Direct database check
+    # Direct database check for debugging
     try:
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
@@ -54,4 +54,4 @@ def admin():
     if raw_requests and not pending_requests:
         print("Mismatch detected: Direct query found data, but get_pending_credit_requests returned empty.")
 
-    return render_template("admin.html", pending_requests=pending_requests)
+    return render_template("admin.html", requests=pending_requests)
